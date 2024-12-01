@@ -27,8 +27,9 @@ func main() {
 		}
 
 		command = strings.TrimSpace(command)
-
 		cmd_lst := strings.Split(command, " ")
+
+		// fmt.Printf("[%s]\n", strings.Join(cmd_lst, ","))
 
 		switch cmd_lst[0] {
 		case "exit":
@@ -36,7 +37,13 @@ func main() {
 				os.Exit(0)
 			}
 
-			code, err := strconv.Atoi(cmd_lst[1])
+			nextArg, _, err := nextNonEmptyString(1, cmd_lst)
+			if err != nil {
+				fmt.Fprintf(os.Stdout, "%s\n", err)
+				break
+			}
+
+			code, err := strconv.Atoi(nextArg)
 
 			if err != nil {
 				os.Exit(1)
@@ -45,7 +52,13 @@ func main() {
 		case "echo":
 			fmt.Fprintf(os.Stdout, "%s\n", strings.Join(cmd_lst[1:], " "))
 		case "type":
-			cmdToCheck := strings.TrimSpace(cmd_lst[1])
+
+			cmdToCheck, _, err := nextNonEmptyString(1, cmd_lst)
+			if err != nil {
+				fmt.Fprintf(os.Stdout, "%s\n", err)
+				break
+			}
+
 			_, exist := buildinCmd[cmdToCheck]
 			if exist {
 				fmt.Fprintf(os.Stdout, "%s is a shell builtin\n", cmdToCheck)
@@ -58,4 +71,20 @@ func main() {
 		}
 
 	}
+}
+
+func nextNonEmptyString(start int, arr []string) (string, int, error) {
+	if start >= len(arr) {
+		return "", 0, fmt.Errorf("Invalid starting index")
+	}
+
+	for idx := start; idx < len(arr); idx++ {
+		cur := arr[idx]
+		if len(cur) > 0 {
+			return cur, idx + 1, nil
+		}
+
+	}
+
+	return "", 0, fmt.Errorf("No non-empty string found")
 }
