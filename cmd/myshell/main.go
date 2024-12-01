@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -26,11 +27,24 @@ func main() {
 
 		command = strings.TrimSpace(command)
 
-		switch command {
-		case "exit 0":
-			os.Exit(0)
+		cmd_lst := strings.Split(command, " ")
+
+		switch cmd_lst[0] {
+		case "exit":
+			if len(cmd_lst) == 1 {
+				os.Exit(0)
+			}
+
+			code, err := strconv.Atoi(cmd_lst[1])
+
+			if err != nil {
+				os.Exit(1)
+			}
+			os.Exit(code)
+		case "echo":
+			fmt.Fprintf(os.Stdout, "%s\n", strings.Join(cmd_lst[1:], " "))
 		default:
-			fmt.Printf("%s: command not found\n", command)
+			fmt.Fprintf(os.Stdout, "%s: command not found\n", command)
 		}
 
 	}
