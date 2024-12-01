@@ -30,7 +30,7 @@ func main() {
 		case "exit 0":
 			os.Exit(0)
 		default:
-			fmt.Println("%s: command not found\n", command)
+			fmt.Printf("%s: command not found\n", command)
 		}
 
 	}
