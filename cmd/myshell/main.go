@@ -12,6 +12,7 @@ import (
 var _ = fmt.Fprint
 
 func main() {
+	buildinCmd := map[string]bool{"type": true, "exit": true, "echo": true}
 
 	for {
 		// Uncomment this block to pass the first stage
@@ -43,6 +44,15 @@ func main() {
 			os.Exit(code)
 		case "echo":
 			fmt.Fprintf(os.Stdout, "%s\n", strings.Join(cmd_lst[1:], " "))
+		case "type":
+			cmdToCheck := strings.TrimSpace(cmd_lst[1])
+			_, exist := buildinCmd[cmdToCheck]
+			if exist {
+				fmt.Fprintf(os.Stdout, "%s is a shell builtin\n", cmdToCheck)
+			} else {
+				fmt.Fprintf(os.Stdout, "%s: not found\n", cmdToCheck)
+			}
+
 		default:
 			fmt.Fprintf(os.Stdout, "%s: command not found\n", command)
 		}
