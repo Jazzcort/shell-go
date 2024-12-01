@@ -52,7 +52,6 @@ func main() {
 		case "echo":
 			fmt.Fprintf(os.Stdout, "%s\n", strings.Join(cmd_lst[1:], " "))
 		case "type":
-
 			cmdToCheck, _, err := nextNonEmptyString(1, cmd_lst)
 			if err != nil {
 				fmt.Fprintf(os.Stdout, "%s\n", err)
@@ -62,9 +61,16 @@ func main() {
 			_, exist := buildinCmd[cmdToCheck]
 			if exist {
 				fmt.Fprintf(os.Stdout, "%s is a shell builtin\n", cmdToCheck)
-			} else {
-				fmt.Fprintf(os.Stdout, "%s: not found\n", cmdToCheck)
+				break
 			}
+
+			path, err := searchFile(os.Getenv("PATH"), cmdToCheck)
+			if err == nil {
+				fmt.Fprintf(os.Stdout, "%s\n", path)
+				break
+			}
+
+			fmt.Fprintf(os.Stdout, "%s: not found\n", cmdToCheck)
 
 		default:
 			fmt.Fprintf(os.Stdout, "%s: command not found\n", command)
@@ -87,4 +93,22 @@ func nextNonEmptyString(start int, arr []string) (string, int, error) {
 	}
 
 	return "", 0, fmt.Errorf("No non-empty string found")
+}
+
+func searchFile(dirString, filename string) (string, error) {
+	dirs := strings.Split(dirString, ":")
+
+	for _, dir := range dirs {
+		files, err := os.ReadDir(dir)
+		if err == nil {
+			for _, file := range files {
+				if file.Name() == filename {
+					return dir + "/" + filename, nil
+				}
+			}
+		}
+	}
+
+	return "", fmt.Errorf("File not found")
+
 }
