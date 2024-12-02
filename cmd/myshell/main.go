@@ -82,7 +82,7 @@ func main() {
 				if err != nil {
 					fmt.Fprintf(os.Stdout, "%s\n", err)
 				} else {
-					fmt.Fprintf(os.Stdout, "%s\n", string(output[:len(output)-2]))
+					fmt.Fprintf(os.Stdout, "%s", string(output))
 				}
 				break
 			}
