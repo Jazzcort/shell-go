@@ -13,7 +13,7 @@ import (
 var _ = fmt.Fprint
 
 func main() {
-	buildinCmd := map[string]bool{"type": true, "exit": true, "echo": true}
+	buildinCmd := map[string]bool{"type": true, "exit": true, "echo": true, "pwd": true}
 
 	for {
 		// Uncomment this block to pass the first stage
@@ -72,6 +72,14 @@ func main() {
 			}
 
 			fmt.Fprintf(os.Stdout, "%s: not found\n", cmdToCheck)
+		case "pwd":
+			wd, err := os.Getwd()
+			if err != nil {
+				fmt.Fprintf(os.Stdout, "Error getting current directory: %s", err)
+				break
+			}
+
+			fmt.Fprintf(os.Stdout, "%s\n", wd)
 
 		default:
 			program, err := searchFile(os.Getenv("PATH"), cmd_lst[0])
