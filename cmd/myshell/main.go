@@ -87,6 +87,18 @@ func main() {
 				break
 			}
 
+			start := dir[0]
+			if start == byte('~') {
+				homeDir := os.Getenv("HOME")
+				newDir := homeDir + dir[1:]
+				err = os.Chdir(newDir)
+				if err != nil {
+					fmt.Fprintf(os.Stdout, "cd: %s: No such file or directory\n", dir)
+				}
+				break
+
+			}
+
 			err = os.Chdir(dir)
 			if err != nil {
 				fmt.Fprintf(os.Stdout, "cd: %s: No such file or directory\n", dir)
