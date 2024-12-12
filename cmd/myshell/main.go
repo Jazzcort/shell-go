@@ -13,7 +13,7 @@ import (
 var _ = fmt.Fprint
 
 func main() {
-	buildinCmd := map[string]bool{"type": true, "exit": true, "echo": true, "pwd": true}
+	buildinCmd := map[string]bool{"type": true, "exit": true, "echo": true, "pwd": true, "cd": true}
 
 	for {
 		// Uncomment this block to pass the first stage
@@ -80,6 +80,17 @@ func main() {
 			}
 
 			fmt.Fprintf(os.Stdout, "%s\n", wd)
+		case "cd":
+			dir, _, err := nextNonEmptyString(1, cmd_lst)
+			if err != nil {
+				fmt.Fprintf(os.Stdout, "%s\n", err)
+				break
+			}
+
+			err = os.Chdir(dir)
+			if err != nil {
+				fmt.Fprintf(os.Stdout, "cd: %s: No such file or directory\n", dir)
+			}
 
 		default:
 			program, err := searchFile(os.Getenv("PATH"), cmd_lst[0])
