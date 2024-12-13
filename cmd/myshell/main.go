@@ -179,8 +179,10 @@ func stripQuotes(command string) ([]string, error) {
 			case '\'':
 				mode = 1
 			case ' ':
-				res = append(res, tmp)
-				tmp = ""
+				if len(tmp) != 0 {
+					res = append(res, tmp)
+					tmp = ""
+				}
 			default:
 				tmp += string(runeSlice[curIdx])
 			}
