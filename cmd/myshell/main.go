@@ -31,7 +31,7 @@ func main() {
 		command = strings.TrimSpace(command)
 		cmd_lst, err := stripQuotes(command)
 
-		fmt.Printf("[%s]\n", strings.Join(cmd_lst, ","))
+		// fmt.Printf("[%s]\n", strings.Join(cmd_lst, ","))
 
 		switch cmd_lst[0] {
 		case "exit":
