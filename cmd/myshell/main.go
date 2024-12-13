@@ -31,7 +31,7 @@ func main() {
 		command = strings.TrimSpace(command)
 		cmd_lst, err := stripQuotes(command)
 
-		// fmt.Printf("[%s]\n", strings.Join(cmd_lst, ","))
+		fmt.Printf("[%s]\n", strings.Join(cmd_lst, ","))
 
 		switch cmd_lst[0] {
 		case "exit":
@@ -104,6 +104,7 @@ func main() {
 			if err != nil {
 				fmt.Fprintf(os.Stdout, "cd: %s: No such file or directory\n", dir)
 			}
+		// case "cat":
 
 		default:
 			program, err := searchFile(os.Getenv("PATH"), cmd_lst[0])
@@ -113,6 +114,7 @@ func main() {
 				output, err := cmd.Output()
 				if err != nil {
 					fmt.Fprintf(os.Stdout, "%s\n", err)
+					fmt.Println("hahaha")
 				} else {
 					fmt.Fprintf(os.Stdout, "%s", string(output))
 				}
