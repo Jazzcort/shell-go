@@ -118,6 +118,7 @@ func main() {
 				cmd := exec.Command(program, cmd_lst[1:]...)
 				output, err := cmd.Output()
 				if err != nil {
+					fmt.Println(cmd_lst)
 					fmt.Fprintf(os.Stdout, "%s\n", err)
 				} else {
 					fmt.Fprintf(os.Stdout, "%s", string(output))
