@@ -110,7 +110,6 @@ func main() {
 			if err != nil {
 				fmt.Fprintf(os.Stdout, "cd: %s: No such file or directory\n", dir)
 			}
-		// case "cat":
 
 		default:
 			program, err := searchFile(os.Getenv("PATH"), cmd_lst[0])
@@ -186,6 +185,8 @@ func stripQuotes(command string) ([]string, error) {
 			case '\'':
 				mode = 1
 				// tmp += string('\'')
+			case '"':
+				mode = 2
 			case ' ':
 				if len(tmp) != 0 {
 					res = append(res, tmp)
@@ -203,6 +204,13 @@ func stripQuotes(command string) ([]string, error) {
 				tmp += string(runeSlice[curIdx])
 			}
 
+		case 2:
+			switch runeSlice[curIdx] {
+			case '"':
+				mode = 0
+			default:
+				tmp += string(runeSlice[curIdx])
+			}
 		default:
 			return []string{}, fmt.Errorf("Failed to stripe the command")
 
