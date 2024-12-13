@@ -52,11 +52,11 @@ func main() {
 			}
 			os.Exit(code)
 		case "echo":
-			for i := 1; i < len(cmd_lst); i++ {
-				if cur := cmd_lst[i]; cur[0] == byte('\'') {
-					cmd_lst[i] = cur[1 : len(cur)-1]
-				}
-			}
+			// for i := 1; i < len(cmd_lst); i++ {
+			// 	if cur := cmd_lst[i]; cur[0] == byte('\'') {
+			// 		cmd_lst[i] = cur[1 : len(cur)-1]
+			// 	}
+			// }
 
 			fmt.Fprintf(os.Stdout, "%s\n", strings.Join(cmd_lst[1:], " "))
 		case "type":
@@ -117,7 +117,7 @@ func main() {
 			fmt.Println(strings.Join(cmd_lst[1:], " "))
 
 			if err == nil {
-				cmd := exec.Command(program, strings.Join(cmd_lst[1:], " "))
+				cmd := exec.Command(program, cmd_lst[1:]...)
 				output, err := cmd.Output()
 				if err != nil {
 					fmt.Fprintf(os.Stdout, "%s\n", err)
@@ -187,7 +187,7 @@ func stripQuotes(command string) ([]string, error) {
 			switch runeSlice[curIdx] {
 			case '\'':
 				mode = 1
-				tmp += string('\'')
+				// tmp += string('\'')
 			case ' ':
 				if len(tmp) != 0 {
 					res = append(res, tmp)
@@ -200,7 +200,7 @@ func stripQuotes(command string) ([]string, error) {
 			switch runeSlice[curIdx] {
 			case '\'':
 				mode = 0
-				tmp += string('\'')
+				// tmp += string('\'')
 			default:
 				tmp += string(runeSlice[curIdx])
 			}
@@ -212,9 +212,9 @@ func stripQuotes(command string) ([]string, error) {
 
 	}
 
-	if mode != 0 {
-		return []string{}, fmt.Errorf("Unclosed quotes")
-	}
+	// if mode != 0 {
+	// 	return []string{}, fmt.Errorf("Unclosed quotes")
+	// }
 
 	if len(tmp) != 0 {
 		res = append(res, tmp)
