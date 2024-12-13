@@ -114,6 +114,7 @@ func main() {
 
 		default:
 			program, err := searchFile(os.Getenv("PATH"), cmd_lst[0])
+			fmt.Println(strings.Join(cmd_lst[1:], " "))
 
 			if err == nil {
 				cmd := exec.Command(program, strings.Join(cmd_lst[1:], " "))
