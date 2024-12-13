@@ -15,6 +15,7 @@ var _ = fmt.Fprint
 func main() {
 	buildinCmd := map[string]bool{"type": true, "exit": true, "echo": true, "pwd": true, "cd": true}
 
+	// MainLoop:
 	for {
 		// Uncomment this block to pass the first stage
 		fmt.Fprint(os.Stdout, "$ ")
@@ -28,7 +29,7 @@ func main() {
 		}
 
 		command = strings.TrimSpace(command)
-		cmd_lst := strings.Split(command, " ")
+		cmd_lst, err := stripQuotes(command)
 
 		// fmt.Printf("[%s]\n", strings.Join(cmd_lst, ","))
 
@@ -118,7 +119,7 @@ func main() {
 				break
 			}
 
-			fmt.Fprintf(os.Stdout, "%s: command not found\n", command)
+			fmt.Fprintf(os.Stdout, "%s: command not found\n", cmd_lst[0])
 		}
 
 	}
@@ -156,4 +157,51 @@ func searchFile(dirString, filename string) (string, error) {
 
 	return "", fmt.Errorf("File not found")
 
+}
+
+func stripSingleQuote(s string) (string, error) {
+	length := len(s)
+	if length >= 2 && s[0] == byte('\'') && s[length-1] == byte('\'') {
+		return s[1 : length-1], nil
+	}
+
+	return "", fmt.Errorf("Invalid Single Quote")
+}
+
+func stripQuotes(command string) ([]string, error) {
+	runeSlice := []rune(command)
+	res, tmp := []string{}, ""
+	mode := 0
+	for curIdx := 0; curIdx < len(runeSlice); curIdx++ {
+		switch mode {
+		case 0:
+			switch runeSlice[curIdx] {
+			case '\'':
+				mode = 1
+			case ' ':
+				res = append(res, tmp)
+				tmp = ""
+			default:
+				tmp += string(runeSlice[curIdx])
+			}
+		case 1:
+			switch runeSlice[curIdx] {
+			case '\'':
+				mode = 0
+			default:
+				tmp += string(runeSlice[curIdx])
+			}
+
+		default:
+			return []string{}, fmt.Errorf("Failed to stripe the command")
+
+		}
+
+	}
+
+	if len(tmp) != 0 {
+		res = append(res, tmp)
+	}
+
+	return res, nil
 }
