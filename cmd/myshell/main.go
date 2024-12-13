@@ -187,6 +187,8 @@ func stripQuotes(command string) ([]string, error) {
 				// tmp += string('\'')
 			case '"':
 				mode = 2
+			case '\\':
+				mode = 3
 			case ' ':
 				if len(tmp) != 0 {
 					res = append(res, tmp)
@@ -211,6 +213,9 @@ func stripQuotes(command string) ([]string, error) {
 			default:
 				tmp += string(runeSlice[curIdx])
 			}
+		case 3:
+			tmp += string(runeSlice[curIdx])
+			mode = 0
 		default:
 			return []string{}, fmt.Errorf("Failed to stripe the command")
 
