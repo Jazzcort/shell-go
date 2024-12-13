@@ -52,6 +52,12 @@ func main() {
 			}
 			os.Exit(code)
 		case "echo":
+			for i := 1; i < len(cmd_lst); i++ {
+				if cur := cmd_lst[i]; cur[0] == byte('\'') {
+					cmd_lst[i] = cur[1 : len(cur)-1]
+				}
+			}
+
 			fmt.Fprintf(os.Stdout, "%s\n", strings.Join(cmd_lst[1:], " "))
 		case "type":
 			cmdToCheck, _, err := nextNonEmptyString(1, cmd_lst)
@@ -203,6 +209,10 @@ func stripQuotes(command string) ([]string, error) {
 
 		}
 
+	}
+
+	if mode != 0 {
+		return []string{}, fmt.Errorf("Unclosed quotes")
 	}
 
 	if len(tmp) != 0 {
