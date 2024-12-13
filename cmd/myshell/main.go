@@ -177,7 +177,8 @@ func stripSingleQuote(s string) (string, error) {
 func stripQuotes(command string) ([]string, error) {
 	runeSlice := []rune(command)
 	res, tmp := []string{}, ""
-	mode := 0
+	prevMode, mode := 0, 0
+
 	for curIdx := 0; curIdx < len(runeSlice); curIdx++ {
 		switch mode {
 		case 0:
@@ -188,6 +189,7 @@ func stripQuotes(command string) ([]string, error) {
 			case '"':
 				mode = 2
 			case '\\':
+				prevMode = 0
 				mode = 3
 			case ' ':
 				if len(tmp) != 0 {
@@ -200,6 +202,7 @@ func stripQuotes(command string) ([]string, error) {
 		case 1:
 			switch runeSlice[curIdx] {
 			case '\'':
+				prevMode = 1
 				mode = 0
 				// tmp += string('\'')
 			default:
@@ -211,13 +214,14 @@ func stripQuotes(command string) ([]string, error) {
 			case '"':
 				mode = 0
 			case '\\':
+				prevMode = 2
 				mode = 3
 			default:
 				tmp += string(runeSlice[curIdx])
 			}
 		case 3:
 			tmp += string(runeSlice[curIdx])
-			mode = 0
+			mode = prevMode
 		default:
 			return []string{}, fmt.Errorf("Failed to stripe the command")
 
