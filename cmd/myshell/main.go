@@ -110,7 +110,7 @@ func main() {
 			program, err := searchFile(os.Getenv("PATH"), cmd_lst[0])
 
 			if err == nil {
-				cmd := exec.Command(program, strings.Join(cmd_lst[1:], " "))
+				cmd := exec.Command(program, strings.Join(cmd_lst[1:], ""))
 				output, err := cmd.Output()
 				if err != nil {
 					fmt.Fprintf(os.Stdout, "%s\n", err)
