@@ -233,7 +233,7 @@ func stripQuotes(command string) ([]string, error) {
 				switch cur := runeSlice[curIdx]; cur {
 				case '\\':
 					tmp += string('\\')
-				case 'n':
+				case '\n':
 					tmp += string('\n')
 				case '"':
 					tmp += string('"')
