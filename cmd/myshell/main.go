@@ -125,6 +125,7 @@ func main() {
 				cmd := exec.Command(program, cmd_args...)
 				output, err := cmd.Output()
 				if err != nil {
+					fmt.Println(command)
 					fmt.Println(cmd_args)
 					fmt.Fprintf(os.Stdout, "%s\n", err)
 				} else {
@@ -228,7 +229,20 @@ func stripQuotes(command string) ([]string, error) {
 				tmp += string(runeSlice[curIdx])
 			}
 		case 3:
-			tmp += string(runeSlice[curIdx])
+			if prevMode == 2 {
+				switch cur := runeSlice[curIdx]; cur {
+				case '\\':
+					tmp += string('\\')
+				case 'n':
+					tmp += string('\n')
+				case '$':
+					tmp += string('$')
+				default:
+					tmp += "\\" + string(cur)
+				}
+			} else {
+				tmp += string(runeSlice[curIdx])
+			}
 			mode = prevMode
 		default:
 			return []string{}, fmt.Errorf("Failed to stripe the command")
