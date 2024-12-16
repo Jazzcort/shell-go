@@ -116,16 +116,16 @@ func main() {
 
 			if err == nil {
 				cmd_args := cmd_lst[1:]
-				switch cmd_lst[0] {
-				case "cat":
-					cmd_args = addDoubleQuote(cmd_args)
-				default:
-				}
+				// switch cmd_lst[0] {
+				// case "cat":
+				// 	cmd_args = addDoubleQuote(cmd_args)
+				// default:
+				// }
 
-				cmd := exec.Command(program, cmd_lst[1:]...)
+				cmd := exec.Command(program, cmd_args...)
 				output, err := cmd.Output()
 				if err != nil {
-					fmt.Println(cmd_lst)
+					fmt.Println(cmd_args)
 					fmt.Fprintf(os.Stdout, "%s\n", err)
 				} else {
 					fmt.Fprintf(os.Stdout, "%s", string(output))
