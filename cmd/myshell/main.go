@@ -15,7 +15,6 @@ var _ = fmt.Fprint
 func main() {
 	buildinCmd := map[string]bool{"type": true, "exit": true, "echo": true, "pwd": true, "cd": true}
 
-	// MainLoop:
 	for {
 		// Uncomment this block to pass the first stage
 		fmt.Fprint(os.Stdout, "$ ")
@@ -30,8 +29,6 @@ func main() {
 
 		command = strings.TrimSpace(command)
 		cmd_lst, err := stripQuotes(command)
-
-		// fmt.Printf("[%s]\n", strings.Join(cmd_lst, ","))
 
 		switch cmd_lst[0] {
 		case "exit":
@@ -52,12 +49,6 @@ func main() {
 			}
 			os.Exit(code)
 		case "echo":
-			// for i := 1; i < len(cmd_lst); i++ {
-			// 	if cur := cmd_lst[i]; cur[0] == byte('\'') {
-			// 		cmd_lst[i] = cur[1 : len(cur)-1]
-			// 	}
-			// }
-
 			fmt.Fprintf(os.Stdout, "%s\n", strings.Join(cmd_lst[1:], " "))
 		case "type":
 			cmdToCheck, _, err := nextNonEmptyString(1, cmd_lst)
@@ -116,11 +107,6 @@ func main() {
 
 			if err == nil {
 				cmd_args := cmd_lst[1:]
-				// switch cmd_lst[0] {
-				// case "cat":
-				// 	cmd_args = addDoubleQuote(cmd_args)
-				// default:
-				// }
 
 				cmd := exec.Command(program, cmd_args...)
 				output, err := cmd.Output()
@@ -174,15 +160,6 @@ func searchFile(dirString, filename string) (string, error) {
 
 }
 
-func stripSingleQuote(s string) (string, error) {
-	length := len(s)
-	if length >= 2 && s[0] == byte('\'') && s[length-1] == byte('\'') {
-		return s[1 : length-1], nil
-	}
-
-	return "", fmt.Errorf("Invalid Single Quote")
-}
-
 func stripQuotes(command string) ([]string, error) {
 	runeSlice := []rune(command)
 	res, tmp := []string{}, ""
@@ -194,7 +171,6 @@ func stripQuotes(command string) ([]string, error) {
 			switch runeSlice[curIdx] {
 			case '\'':
 				mode = 1
-				// tmp += string('\'')
 			case '"':
 				mode = 2
 			case '\\':
@@ -213,7 +189,6 @@ func stripQuotes(command string) ([]string, error) {
 			case '\'':
 				prevMode = 1
 				mode = 0
-				// tmp += string('\'')
 			default:
 				tmp += string(runeSlice[curIdx])
 			}
@@ -253,22 +228,9 @@ func stripQuotes(command string) ([]string, error) {
 
 	}
 
-	// if mode != 0 {
-	// 	return []string{}, fmt.Errorf("Unclosed quotes")
-	// }
-
 	if len(tmp) != 0 {
 		res = append(res, tmp)
 	}
 
 	return res, nil
-}
-
-func addDoubleQuote(args []string) []string {
-	newArgs := make([]string, len(args))
-	for idx, s := range args {
-		newArgs[idx] = "\"" + s + "\""
-	}
-
-	return newArgs
 }
