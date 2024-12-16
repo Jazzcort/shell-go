@@ -115,6 +115,13 @@ func main() {
 			program, err := searchFile(os.Getenv("PATH"), cmd_lst[0])
 
 			if err == nil {
+				cmd_args := cmd_lst[1:]
+				switch cmd_lst[0] {
+				case "cat":
+					cmd_args = addDoubleQuote(cmd_args)
+				default:
+				}
+
 				cmd := exec.Command(program, cmd_lst[1:]...)
 				output, err := cmd.Output()
 				if err != nil {
@@ -239,4 +246,13 @@ func stripQuotes(command string) ([]string, error) {
 	}
 
 	return res, nil
+}
+
+func addDoubleQuote(args []string) []string {
+	newArgs := make([]string, len(args))
+	for idx, s := range args {
+		newArgs[idx] = "\"" + s + "\""
+	}
+
+	return newArgs
 }
