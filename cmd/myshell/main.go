@@ -235,6 +235,8 @@ func stripQuotes(command string) ([]string, error) {
 					tmp += string('\\')
 				case 'n':
 					tmp += string('\n')
+				case '"':
+					tmp += string('"')
 				case '$':
 					tmp += string('$')
 				default:
