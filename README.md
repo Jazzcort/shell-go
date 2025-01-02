@@ -22,7 +22,7 @@ To build and run GoShell, ensure the following are installed:
 1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/goshell.git
-   cd goshell
+   cd cmd/myshell
    ```
 
 2. Build the project:
@@ -45,26 +45,10 @@ Once GoShell is running, you can type commands as you would in a standard shell:
   > pwd
   > cd /path/to/directory
   ```
-
-- Use piping:
-  ```
-  > ls | grep "main"
-  ```
-
 - Redirect output to a file:
   ```
   > echo "Hello, GoShell!" > output.txt
   ```
-
-## File Structure
-
-```
-.
-├── main.go          # Entry point for the application
-├── commands         # Directory for built-in commands
-├── utils            # Utility functions
-└── README.md        # Project documentation
-```
 
 ## Contributing
 
